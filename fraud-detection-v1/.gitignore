@@ -1,0 +1,42 @@
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Python Cache & Build Artifacts
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDEs & System Files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Data & Models (Ignores datasets and heavy model weights)
+data/raw/
+data/processed/
+*.csv
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Logs & Environment Variables
+*.log
+.env
