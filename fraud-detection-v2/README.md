@@ -1,10 +1,14 @@
 # Credit Card Fraud Detection — V2
+
 ## Model Comparison and Evaluation
 
-V2 extends the exploratory analysis completed in V1 by training and comparing machine-learning models for credit-card fraud detection.
+V2 extends the exploratory analysis and baseline modeling completed in V1.
 
-The main objective is to identify a model that can detect fraudulent transactions effectively despite the severe class imbalance in the dataset.
---
+The objective of V2 is to train, compare, and evaluate multiple machine-learning models for credit-card fraud detection while considering the severe class imbalance in the dataset.
+
+The models are evaluated using fraud-focused metrics rather than accuracy alone.
+
+---
 
 ## Project Objective
 
@@ -13,7 +17,7 @@ The dataset contains credit-card transactions labeled as either:
 - `0`: Legitimate transaction
 - `1`: Fraudulent transaction
 
-Fraudulent transactions represent only a very small proportion of all transactions. Therefore, accuracy alone is not an appropriate metric for evaluating the models.
+Fraudulent transactions represent only a very small proportion of all transactions. Therefore, accuracy alone can be misleading.
 
 V2 focuses on:
 
@@ -23,68 +27,116 @@ V2 focuses on:
 - Training multiple classification models
 - Comparing model performance
 - Analyzing false positives and false negatives
-- Selecting a strong candidate for further tuning
+- Selecting a strong candidate for hyperparameter tuning
+- Studying classification thresholds
 
 ---
 
 ## Models Compared
 
-The comparison includes four models:
+V2 compares four models.
 
 ### 1. Dummy Classifier
 
-The Dummy Classifier is used as a reference baseline. It does not learn meaningful patterns from the data and helps demonstrate why accuracy is misleading for this problem.
+The Dummy Classifier provides a reference baseline.
+
+It does not learn meaningful relationships from the data. Its purpose is to demonstrate why accuracy is not sufficient for this fraud-detection problem.
 
 ### 2. Logistic Regression
 
-Logistic Regression is used as an interpretable baseline model. It provides a simple starting point and allows us to understand how well a linear model performs.
+Logistic Regression is used as an interpretable linear baseline.
+
+It provides a simple reference point and helps evaluate how well a linear model performs on the dataset.
 
 ### 3. Random Forest
 
-Random Forest is an ensemble of decision trees. It can model nonlinear relationships and interactions between features.
+Random Forest is an ensemble of decision trees.
+
+It can model nonlinear relationships and interactions between features.
 
 ### 4. XGBoost
 
-XGBoost is a gradient-boosting model designed for strong performance on structured tabular data. It is expected to be one of the strongest candidates for this problem.
+XGBoost is a gradient-boosting algorithm designed for strong performance on structured tabular data.
 
----
-
-## Evaluation Metrics
-
-The models are evaluated using metrics suited to highly imbalanced classification:
-
-- **Precision:** The proportion of predicted fraud cases that are actually fraudulent.
-- **Recall:** The proportion of actual fraud cases detected by the model.
-- **F1-score:** The harmonic mean of precision and recall.
-- **ROC-AUC:** Measures how well the model separates the two classes across thresholds.
-- **PR-AUC:** Measures performance on the positive fraud class and is especially important for rare-event detection.
-- **Confusion matrix:** Shows true negatives, false positives, false negatives, and true positives.
-
-The main comparison metric is **PR-AUC**, supported by recall, precision, and F1-score.
+It is expected to be one of the strongest candidate models for this problem.
 
 ---
 
 ## Dataset
 
-The project uses the Credit Card Fraud Detection dataset.
+V2 uses the same shared dataset as V1.
+
+The dataset source is:
+
+https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
 
 The dataset contains:
 
 - 284,807 transactions
-- 30 input features
-- 1 binary target column named `Class`
+- 30 input columns
+- 28 PCA-transformed numerical features
+- `Time`
+- `Amount`
+- `Class` as the target column
 - 492 fraudulent transactions
 - 284,315 legitimate transactions
+
+Target values:
+
+- `0`: Legitimate transaction
+- `1`: Fraudulent transaction
 
 The dataset is highly imbalanced:
 
 - Legitimate transactions: approximately 99.83%
 - Fraudulent transactions: approximately 0.17%
 
-The raw dataset is stored at:
+All project versions use one shared raw dataset:
 
 ```text
 data/raw/creditcard.csv
+```
+
+The raw dataset is intentionally excluded from Git because it is a large local file.
+
+---
+
+## Tech Stack
+
+### Programming Language
+
+- Python
+
+### Data Processing
+
+- pandas
+- NumPy
+
+### Machine Learning
+
+- scikit-learn
+- imbalanced-learn
+- XGBoost
+
+### Data Visualization
+
+- Matplotlib
+- Seaborn
+
+### Development Tools
+
+- Jupyter Notebook
+- Visual Studio Code
+- Git
+- GitHub
+
+### Environment
+
+- Python virtual environment
+- Shared environment located at:
+
+```text
+venv/
 ```
 
 ---
@@ -92,72 +144,106 @@ data/raw/creditcard.csv
 ## Project Structure
 
 ```text
-fraud-detection-v2/
+Credit Card Fraud Detection/
+│
 ├── data/
-│   └── raw/
-│       └── creditcard.csv
-├── models/
-├── notebooks/
-│   ├── 01_model_comparison.ipynb
-│   └── 02_hyperparameter_tuning.ipynb
-├── reports/
-├── src/
-│   ├── __init__.py
-│   ├── preprocess.py
-│   ├── train.py
-│   └── evaluate.py
+│   ├── raw/
+│   │   └── creditcard.csv
+│   └── processed/
+│       ├── v1/
+│       ├── v2/
+│       ├── v3/
+│       └── v4/
+│
+├── fraud-detection-v1/
+│   ├── notebooks/
+│   │   ├── 01_eda.ipynb
+│   │   └── 02_model_training.ipynb
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── preprocess.py
+│   │   ├── train.py
+│   │   └── evaluate.py
+│   ├── models/
+│   ├── reports/
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v2/
+│   ├── notebooks/
+│   │   ├── 01_model_comparison.ipynb
+│   │   └── 02_hyperparameter_tuning.ipynb
+│   │
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── preprocess.py
+│   │   ├── train.py
+│   │   └── evaluate.py
+│   │
+│   ├── models/
+│   ├── reports/
+│   ├── .gitignore
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v3/
+│   ├── notebooks/
+│   │   ├── 01_feature_importance.ipynb
+│   │   └── 02_model_explainability.ipynb
+│   ├── src/
+│   ├── models/
+│   ├── reports/
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v4/
+│   ├── notebooks/
+│   │   └── 01_final_pipeline.ipynb
+│   ├── src/
+│   ├── models/
+│   ├── reports/
+│   ├── app/
+│   ├── README.md
+│   └── requirements.txt
+│
 ├── .gitignore
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── venv/
 ```
 
----
-
-## Workflow
-
-The V2 workflow is:
-
-1. Load the dataset.
-2. Separate features and target.
-3. Create a stratified training and testing split.
-4. Calculate the class-imbalance ratio.
-5. Train the Dummy Classifier, Logistic Regression, Random Forest, and XGBoost models.
-6. Generate predictions and probability scores.
-7. Calculate the evaluation metrics.
-8. Compare the models.
-9. Visualize confusion matrices.
-10. Select the strongest candidate.
-11. Tune the selected model in the next notebook.
-12. Analyze classification thresholds.
-
----
-
-## Class-Imbalance Strategy
-
-The dataset contains far fewer fraud cases than legitimate transactions.
-
-To reduce the impact of this imbalance:
-
-- Logistic Regression uses `class_weight="balanced"`.
-- Random Forest uses `class_weight="balanced_subsample"`.
-- XGBoost uses `scale_pos_weight`.
-- Stratified splitting preserves the class distribution in the training and test sets.
-
-Resampling methods such as SMOTE may be explored during later experimentation, but resampling must only be applied to the training data to avoid data leakage.
-
----
-
-## Environment Setup
-
-The project uses the shared virtual environment located at the repository root:
+The raw dataset is stored only once:
 
 ```text
-Credit Card Fraud Detection/venv/
+data/raw/creditcard.csv
 ```
 
-Activate it from the repository root:
+Version-specific outputs can be stored in:
 
-### Windows PowerShell
+```text
+data/processed/v1/
+data/processed/v2/
+data/processed/v3/
+data/processed/v4/
+```
+
+V2 models should be stored in:
+
+```text
+fraud-detection-v2/models/
+```
+
+V2 reports and visualizations should be stored in:
+
+```text
+fraud-detection-v2/reports/
+```
+
+---
+
+## Setup
+
+Run the following commands from the repository root:
 
 ```powershell
 .\venv\Scripts\Activate.ps1
@@ -169,69 +255,234 @@ Install the V2 dependencies:
 python -m pip install -r .\fraud-detection-v2\requirements.txt
 ```
 
-The notebook kernel is:
+If the shared environment does not exist yet, create it from the repository root:
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+Place the dataset at:
 
 ```text
-Python (Credit Card Fraud Detection)
+data/raw/creditcard.csv
 ```
 
 ---
 
-## Running the Notebook
+## Running the Notebooks
 
-Open:
+Open the following notebooks:
 
 ```text
-notebooks/01_model_comparison.ipynb
+fraud-detection-v2/notebooks/01_model_comparison.ipynb
+fraud-detection-v2/notebooks/02_hyperparameter_tuning.ipynb
 ```
 
-Select the kernel:
+Select the shared project kernel:
 
 ```text
 Python (Credit Card Fraud Detection)
 ```
 
-Run the notebook cells in order.
+Because the notebooks are located inside:
 
-The dataset path used from the notebook is:
+```text
+fraud-detection-v2/notebooks/
+```
+
+load the shared dataset using:
 
 ```python
-df = pd.read_csv("../data/raw/creditcard.csv")
+import pandas as pd
+
+df = pd.read_csv("../../data/raw/creditcard.csv")
 ```
+
+The path works as follows:
+
+- The first `..` moves from `notebooks/` to `fraud-detection-v2/`
+- The second `..` moves to the repository root
+- `data/raw/creditcard.csv` points to the shared dataset
+
+Run the notebook cells in order.
+
+---
+
+## V2 Workflow
+
+The V2 workflow is:
+
+1. Load the shared raw dataset.
+2. Separate features and target.
+3. Create a stratified training and testing split.
+4. Calculate the class-imbalance ratio.
+5. Train the Dummy Classifier.
+6. Train Logistic Regression.
+7. Train Random Forest.
+8. Train XGBoost.
+9. Generate predictions and probability scores.
+10. Calculate evaluation metrics.
+11. Compare model performance.
+12. Plot confusion matrices.
+13. Analyze false positives and false negatives.
+14. Select the strongest candidate.
+15. Tune the selected model.
+16. Analyze classification thresholds.
+17. Save models and results.
+
+---
+
+## Class-Imbalance Strategy
+
+The dataset contains far fewer fraud cases than legitimate transactions.
+
+V2 uses several strategies to reduce the impact of class imbalance:
+
+- Stratified splitting preserves the class distribution.
+- Logistic Regression uses `class_weight="balanced"`.
+- Random Forest uses `class_weight="balanced_subsample"`.
+- XGBoost uses `scale_pos_weight`.
+- PR-AUC is used as an important comparison metric.
+
+Resampling methods such as SMOTE may be explored in future experiments.
+
+If resampling is used, it must be applied only to the training data. Applying resampling before the train/test split can cause data leakage.
+
+---
+
+## Evaluation Metrics
+
+The models are evaluated using:
+
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- PR-AUC
+- Confusion matrix
+- Classification report
+
+### Precision
+
+Precision measures how many transactions predicted as fraud were actually fraudulent.
+
+### Recall
+
+Recall measures how many actual fraudulent transactions were detected.
+
+High recall is important because the goal is to catch fraudulent transactions.
+
+### F1-score
+
+F1-score balances precision and recall.
+
+### ROC-AUC
+
+ROC-AUC measures the model's ability to separate legitimate and fraudulent transactions across different thresholds.
+
+### PR-AUC
+
+PR-AUC focuses on the relationship between precision and recall.
+
+It is especially useful for rare-event detection and highly imbalanced classification.
+
+### Confusion Matrix
+
+The confusion matrix contains:
+
+- True negatives
+- False positives
+- False negatives
+- True positives
+
+The main comparison metric for V2 is **PR-AUC**, supported by recall, precision, and F1-score.
+
+Accuracy is not used as the main selection metric.
 
 ---
 
 ## Expected Outcome
 
-At the end of the first notebook, we should have:
+At the end of V2, the project should contain:
 
 - A trained version of each comparison model
-- A results table containing all evaluation metrics
+- A results table containing evaluation metrics
 - Confusion matrices
 - Classification reports
-- A preliminary ranking of the models
+- Precision-recall comparisons
+- A preliminary model ranking
 - A selected candidate for hyperparameter tuning
+- Threshold-analysis results
+- Saved model files in `fraud-detection-v2/models/`
+- Evaluation reports in `fraud-detection-v2/reports/`
 
-The best model will not be selected using accuracy alone. The decision will consider the trade-off between detecting more fraud cases and limiting false alarms.
+The best model will not be selected using accuracy alone.
+
+The final decision will consider the trade-off between:
+
+- Detecting more fraudulent transactions
+- Maintaining acceptable precision
+- Reducing false positives
+- Achieving strong PR-AUC and F1-score
+
+---
+
+## V2 Roadmap
+
+### V1 — Foundation and Baseline
+
+V1 focuses on:
+
+- Exploratory data analysis
+- Understanding class imbalance
+- Basic preprocessing
+- Train/test splitting
+- Baseline model training
+- Fraud-focused evaluation
+
+### V2 — Model Comparison and Tuning
+
+V2 focuses on:
+
+- Comparing multiple models
+- Handling class imbalance
+- Hyperparameter tuning
+- Threshold analysis
+- Improving recall and precision
+- Selecting a strong candidate model
+
+### V3 — Explainability
+
+V3 will focus on:
+
+- Feature importance
+- Model interpretation
+- SHAP analysis
+- Understanding model predictions
+- Explaining results to stakeholders
+
+### V4 — Practical Application
+
+V4 will focus on:
+
+- Building a reusable prediction pipeline
+- Saving and loading trained models
+- Creating an API or dashboard
+- Preparing the project for deployment
+- Improving reproducibility and presentation
 
 ---
 
 ## Next Steps
 
-After completing the model comparison:
+After completing the initial model comparison:
 
-1. Tune the best-performing model.
-2. Test different model parameters.
-3. Adjust the classification threshold.
-4. Compare the effect of threshold changes on precision and recall.
-5. Save the selected model and preprocessing objects.
-6. Prepare the project for explainability work in V3.
-
----
-
-## Version Roadmap
-
-- **V1:** Exploratory Data Analysis
-- **V2:** Model comparison, tuning, and evaluation
-- **V3:** Model explainability and feature interpretation
-- **V4:** Deployment and practical fraud-detection application
+1. Select the strongest candidate model.
+2. Tune its hyperparameters.
+3. Test different classification thresholds.
+4. Compare threshold effects on precision and recall.
+5. Save the final model.
+6. Save preprocessing objects.
+7. Save evaluation results and visualizations.
+8. Prepare the selected model for explainability work in V3.

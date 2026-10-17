@@ -1,165 +1,386 @@
-# Credit Card Fraud Detection V1
+# Credit Card Fraud Detection — V1
 
-A machine learning project focused on detecting fraudulent credit card transactions using a real-world imbalanced dataset.
+## Exploratory Data Analysis and Baseline Modeling
+
+V1 is the foundation of the Credit Card Fraud Detection project. It focuses on understanding the dataset, analyzing the severe class imbalance, exploring transaction patterns, and creating an initial baseline model.
+
+The goal of V1 is not to build the final production model. Instead, it establishes a reliable foundation for the later project versions.
+
+---
 
 ## Project Goal
 
-This project aims to build a model that can identify fraudulent transactions while minimizing false positives. Since fraudulent transactions are rare, this is an imbalanced classification problem.
+This project aims to identify fraudulent credit-card transactions while minimizing false positives.
+
+Fraud detection is an imbalanced classification problem because fraudulent transactions represent only a very small proportion of all transactions. Therefore, accuracy alone is not an appropriate evaluation metric.
+
+V1 focuses on:
+
+- Understanding the dataset
+- Inspecting the dataset structure
+- Measuring class imbalance
+- Exploring transaction amounts and times
+- Checking missing values
+- Analyzing feature distributions
+- Splitting the data into training and testing sets
+- Training a baseline classifier
+- Evaluating the baseline using fraud-focused metrics
+
+---
 
 ## Why This Project Matters
 
-Fraud detection is a critical real-world problem in financial systems. The goal is not only to maximize accuracy, but to correctly detect fraud cases while keeping false alarms low.
+Fraud detection is an important real-world machine-learning problem in financial systems.
+
+A useful fraud-detection model should:
+
+- Detect as many fraudulent transactions as possible
+- Minimize false alarms
+- Handle highly imbalanced data
+- Provide meaningful evaluation results
+- Support future model improvement and explainability
+
+The most important lesson in V1 is that a high accuracy score can be misleading when the dataset is highly imbalanced.
+
+---
 
 ## Dataset
 
 This project uses the Kaggle Credit Card Fraud Detection dataset.
 
-- Link: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
-- Number of rows: 284,807
-- Fraudulent transactions: 492
-- Features: 28 PCA-transformed numerical features, plus Time and Amount
-- Target: Class (0 = legitimate, 1 = fraud)
+Dataset source:
 
-## Tech Stack
+https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
 
-- Python
-- pandas
-- numpy
-- scikit-learn
-- matplotlib
-- seaborn
-- imbalanced-learn
-- xgboost
-- Jupyter Notebook
+The dataset contains:
 
-## Project Structure
+- 284,807 transactions
+- 30 input columns
+- 28 PCA-transformed numerical features
+- `Time`
+- `Amount`
+- `Class` as the target column
+- 492 fraudulent transactions
+- 284,315 legitimate transactions
 
-```text
-fraud-detection-v1/
-├── data/
-│   ├── raw/
-│   │   └── creditcard.csv
-│   └── processed/
-├── notebooks/
-│   ├── 01_eda.ipynb
-│   └── 02_model_training.ipynb
-├── src/
-│   ├── __init__.py
-│   ├── preprocess.py
-│   ├── train.py
-│   ├── evaluate.py
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
+Target values:
 
-## Setup
+- `0`: Legitimate transaction
+- `1`: Fraudulent transaction
 
-1. Create and activate a virtual environment:
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
+The dataset is highly imbalanced:
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+- Legitimate transactions: approximately 99.83%
+- Fraudulent transactions: approximately 0.17%
 
-3. Download the dataset and place it in:
+All project versions use the same shared raw dataset:
+
 ```text
 data/raw/creditcard.csv
 ```
 
-4. Open Jupyter Notebook:
-```bash
-jupyter notebook
+The raw dataset is a large local file and is intentionally excluded from Git.
+
+---
+
+## Tech Stack
+
+### Programming Language
+
+- Python
+
+### Data Processing
+
+- pandas
+- NumPy
+
+### Machine Learning
+
+- scikit-learn
+- imbalanced-learn
+- XGBoost
+
+### Data Visualization
+
+- Matplotlib
+- Seaborn
+
+### Development Tools
+
+- Jupyter Notebook
+- Visual Studio Code
+- Git
+- GitHub
+
+### Environment
+
+- Python virtual environment
+- Shared project environment located in:
+
+```text
+venv/
 ```
 
-## Project Roadmap
+---
 
-This project is organized into four phases:
+## Project Structure
 
-### V1 — Foundation and Baseline
+```text
+Credit Card Fraud Detection/
+│
+├── data/
+│   ├── raw/
+│   │   └── creditcard.csv
+│   └── processed/
+│       ├── v1/
+│       ├── v2/
+│       ├── v3/
+│       └── v4/
+│
+├── fraud-detection-v1/
+│   ├── notebooks/
+│   │   ├── 01_eda.ipynb
+│   │   └── 02_model_training.ipynb
+│   │
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── preprocess.py
+│   │   ├── train.py
+│   │   └── evaluate.py
+│   │
+│   ├── models/
+│   ├── reports/
+│   ├── .gitignore
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v2/
+│   ├── notebooks/
+│   │   ├── 01_model_comparison.ipynb
+│   │   └── 02_hyperparameter_tuning.ipynb
+│   │
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── preprocess.py
+│   │   ├── train.py
+│   │   └── evaluate.py
+│   │
+│   ├── models/
+│   ├── reports/
+│   ├── .gitignore
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v3/
+│   ├── notebooks/
+│   │   ├── 01_feature_importance.ipynb
+│   │   └── 02_model_explainability.ipynb
+│   ├── src/
+│   ├── models/
+│   ├── reports/
+│   ├── README.md
+│   └── requirements.txt
+│
+├── fraud-detection-v4/
+│   ├── notebooks/
+│   │   └── 01_final_pipeline.ipynb
+│   ├── src/
+│   ├── models/
+│   ├── reports/
+│   ├── app/
+│   ├── README.md
+│   └── requirements.txt
+│
+├── .gitignore
+├── README.md
+├── requirements.txt
+└── venv/
+```
 
-V1 focuses on understanding the dataset and creating a working baseline model. This is the first and most important stage of the project.
+The raw dataset is stored only once at:
 
-In this phase, the project includes:
-- Loading and inspecting the dataset
-- Checking class imbalance
-- Understanding feature distributions
-- Handling missing values and basic preprocessing
-- Splitting data into train and test sets
-- Training a baseline model
-- Evaluating the model using fraud-focused metrics
+```text
+data/raw/creditcard.csv
+```
 
-The goal of V1 is not to build the perfect model, but to establish a strong foundation and learn how fraud detection behaves in real data.
+Each project version has its own notebooks, source code, models, reports, and documentation.
 
-### V2 — Improved Performance
+---
 
-V2 focuses on improving model performance beyond the baseline. This includes:
-- Comparing multiple models
-- Tuning hyperparameters
-- Handling class imbalance more effectively
-- Evaluating threshold choices for fraud detection
+## Setup
 
-The goal is to achieve better recall without creating too many false positives.
+Run the following commands from the repository root:
 
-### V3 — Explainability and Practical Use
+```powershell
+.\venv\Scripts\Activate.ps1
+```
 
-V3 focuses on making the model more meaningful in real-world usage:
-- Feature importance analysis
-- Model explainability
-- Threshold tuning based on business risk
-- Understanding which features contribute most to fraud detection
+Install the V1 dependencies:
 
-This phase makes the project more useful and easier to explain to stakeholders.
+```powershell
+python -m pip install -r .\fraud-detection-v1\requirements.txt
+```
 
-### V4 — Production-Ready and Portfolio-Ready
+If the shared environment does not exist yet, create it from the repository root:
 
-V4 focuses on polishing the project for presentation and real deployment:
-- Cleaning the training pipeline
-- Saving and loading models
-- Building a dashboard or API
-- Improving organization and reproducibility
-- Making the project suitable for portfolio presentation
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
 
-This phase transforms the project from a study into a professional ML project.
+Place the downloaded dataset at:
 
-## V1: Specific Focus
+```text
+data/raw/creditcard.csv
+```
 
-V1 is the foundation of the project. It is where the project learns the data and builds the first working model.
+---
 
-V1 includes:
-- Loading the dataset
-- Checking shape and column names
-- Analyzing class distribution
-- Inspecting missing values
-- Looking at transaction amount and time patterns
-- Detecting outliers
-- Splitting data into train and test sets
-- Training a baseline classifier
-- Evaluating with precision, recall, F1-score, confusion matrix, ROC-AUC, and PR-AUC
+## Running the Notebooks
 
-This phase teaches the most important lesson of fraud detection: accuracy is not enough, because the data is highly imbalanced.
+Open the following notebooks:
 
-For this project, recall is especially important because the goal is to catch as many actual fraud cases as possible.
+```text
+fraud-detection-v1/notebooks/01_eda.ipynb
+fraud-detection-v1/notebooks/02_model_training.ipynb
+```
 
-## Important Metrics
+Select the project virtual-environment kernel in Jupyter or VS Code.
 
-For fraud detection, we focus on:
+Because the notebooks are located inside:
+
+```text
+fraud-detection-v1/notebooks/
+```
+
+the shared dataset must be loaded using:
+
+```python
+import pandas as pd
+
+df = pd.read_csv("../../data/raw/creditcard.csv")
+```
+
+The path works as follows:
+
+- The first `..` moves from `notebooks/` to `fraud-detection-v1/`
+- The second `..` moves to the repository root
+- `data/raw/creditcard.csv` points to the shared dataset
+
+Run the notebook cells in order.
+
+---
+
+## V1 Workflow
+
+The V1 workflow is:
+
+1. Load the shared dataset.
+2. Inspect the shape and column names.
+3. Check the data types.
+4. Check for missing values.
+5. Analyze the target-class distribution.
+6. Explore transaction amounts.
+7. Explore transaction times.
+8. Analyze feature distributions.
+9. Inspect potential outliers.
+10. Split the data into training and testing sets.
+11. Train a baseline classifier.
+12. Generate predictions.
+13. Evaluate the baseline model.
+14. Save useful results for V2.
+
+---
+
+## Evaluation Metrics
+
+The baseline model is evaluated using:
+
 - Precision
 - Recall
 - F1-score
 - ROC-AUC
 - PR-AUC
 - Confusion matrix
+- Classification report
 
-Recall is especially important because we want to catch fraudulent transactions, even when they are rare.
+### Precision
+
+Precision measures how many transactions predicted as fraud were actually fraudulent.
+
+### Recall
+
+Recall measures how many actual fraudulent transactions were detected.
+
+Recall is especially important because missing a fraudulent transaction can be costly.
+
+### F1-score
+
+F1-score balances precision and recall.
+
+### ROC-AUC
+
+ROC-AUC measures how well the model separates legitimate and fraudulent transactions across different thresholds.
+
+### PR-AUC
+
+PR-AUC is especially useful for highly imbalanced classification problems because it focuses more on the positive class.
+
+---
+
+## V1 Roadmap
+
+### V1 — Foundation and Baseline
+
+V1 focuses on:
+
+- Exploratory data analysis
+- Understanding class imbalance
+- Basic preprocessing
+- Train/test splitting
+- Baseline model training
+- Fraud-focused evaluation
+
+### V2 — Improved Performance
+
+V2 focuses on:
+
+- Comparing multiple models
+- Hyperparameter tuning
+- Better class-imbalance handling
+- Threshold analysis
+- Improving recall and precision
+
+### V3 — Explainability
+
+V3 focuses on:
+
+- Feature importance
+- Model interpretation
+- SHAP analysis
+- Understanding why predictions are made
+- Communicating results to stakeholders
+
+### V4 — Practical Application
+
+V4 focuses on:
+
+- Building a reusable prediction pipeline
+- Saving and loading trained models
+- Creating an API or dashboard
+- Preparing the project for deployment
+- Improving reproducibility and presentation
+
+---
 
 ## Current Status
 
-This is V1 of the project. The focus is on:
-- Understanding the dataset
-- Building a correct baseline
-- Learning the fundamentals of fraud detection
+V1 is focused on building a reliable foundation for the project.
+
+The main objectives are:
+
+- Understand the dataset
+- Understand the class imbalance
+- Build a correct baseline
+- Learn which metrics are appropriate
+- Prepare the project for model comparison in V2
