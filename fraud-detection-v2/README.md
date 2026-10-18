@@ -26,39 +26,44 @@ V2 focuses on:
 - Handling class imbalance
 - Training multiple classification models
 - Comparing model performance
-- Analyzing false positives and false negatives
 - Selecting a strong candidate for hyperparameter tuning
 - Studying classification thresholds
+- Saving the final trained model and evaluation reports
 
 ---
 
 ## Models Compared
 
-V2 compares four models.
+V2 compares the following models:
 
-### 1. Dummy Classifier
+1. Dummy Classifier
+2. Logistic Regression
+3. Random Forest
+4. XGBoost
+
+### Dummy Classifier
 
 The Dummy Classifier provides a reference baseline.
 
 It does not learn meaningful relationships from the data. Its purpose is to demonstrate why accuracy is not sufficient for this fraud-detection problem.
 
-### 2. Logistic Regression
+### Logistic Regression
 
 Logistic Regression is used as an interpretable linear baseline.
 
 It provides a simple reference point and helps evaluate how well a linear model performs on the dataset.
 
-### 3. Random Forest
+### Random Forest
 
 Random Forest is an ensemble of decision trees.
 
 It can model nonlinear relationships and interactions between features.
 
-### 4. XGBoost
+### XGBoost
 
 XGBoost is a gradient-boosting algorithm designed for strong performance on structured tabular data.
 
-It is expected to be one of the strongest candidate models for this problem.
+It was selected as the candidate model for hyperparameter tuning because it achieved the strongest overall baseline performance.
 
 ---
 
@@ -160,10 +165,6 @@ Credit Card Fraud Detection/
 │   │   ├── 01_eda.ipynb
 │   │   └── 02_model_training.ipynb
 │   ├── src/
-│   │   ├── __init__.py
-│   │   ├── preprocess.py
-│   │   ├── train.py
-│   │   └── evaluate.py
 │   ├── models/
 │   ├── reports/
 │   ├── README.md
@@ -173,15 +174,17 @@ Credit Card Fraud Detection/
 │   ├── notebooks/
 │   │   ├── 01_model_comparison.ipynb
 │   │   └── 02_hyperparameter_tuning.ipynb
-│   │
 │   ├── src/
 │   │   ├── __init__.py
 │   │   ├── preprocess.py
 │   │   ├── train.py
 │   │   └── evaluate.py
-│   │
 │   ├── models/
+│   │   └── xgboost_tuned.joblib
 │   ├── reports/
+│   │   ├── model_comparison.csv
+│   │   ├── threshold_analysis.csv
+│   │   └── tuned_xgboost_metrics.csv
 │   ├── .gitignore
 │   ├── README.md
 │   └── requirements.txt
@@ -218,22 +221,13 @@ The raw dataset is stored only once:
 data/raw/creditcard.csv
 ```
 
-Version-specific outputs can be stored in:
-
-```text
-data/processed/v1/
-data/processed/v2/
-data/processed/v3/
-data/processed/v4/
-```
-
-V2 models should be stored in:
+V2 models are stored in:
 
 ```text
 fraud-detection-v2/models/
 ```
 
-V2 reports and visualizations should be stored in:
+V2 reports are stored in:
 
 ```text
 fraud-detection-v2/reports/
@@ -299,12 +293,6 @@ import pandas as pd
 df = pd.read_csv("../../data/raw/creditcard.csv")
 ```
 
-The path works as follows:
-
-- The first `..` moves from `notebooks/` to `fraud-detection-v2/`
-- The second `..` moves to the repository root
-- `data/raw/creditcard.csv` points to the shared dataset
-
 Run the notebook cells in order.
 
 ---
@@ -324,12 +312,11 @@ The V2 workflow is:
 9. Generate predictions and probability scores.
 10. Calculate evaluation metrics.
 11. Compare model performance.
-12. Plot confusion matrices.
-13. Analyze false positives and false negatives.
-14. Select the strongest candidate.
-15. Tune the selected model.
-16. Analyze classification thresholds.
-17. Save models and results.
+12. Select XGBoost as the strongest baseline candidate.
+13. Tune the XGBoost hyperparameters.
+14. Analyze classification thresholds.
+15. Save the final tuned model.
+16. Save evaluation reports.
 
 ---
 
@@ -341,7 +328,7 @@ V2 uses several strategies to reduce the impact of class imbalance:
 
 - Stratified splitting preserves the class distribution.
 - Logistic Regression uses `class_weight="balanced"`.
-- Random Forest uses `class_weight="balanced_subsample"`.
+- Random Forest uses class balancing.
 - XGBoost uses `scale_pos_weight`.
 - PR-AUC is used as an important comparison metric.
 
@@ -402,24 +389,99 @@ Accuracy is not used as the main selection metric.
 
 ---
 
+## Baseline Model Comparison Results
+
+The baseline models were evaluated using the same test set.
+
+| Model | Precision | Recall | F1-Score | ROC-AUC | PR-AUC |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.0610 | 0.9184 | 0.1144 | 0.9721 | 0.7190 |
+| Random Forest | 0.9605 | 0.7449 | 0.8391 | 0.9525 | 0.8557 |
+| XGBoost | 0.8804 | 0.8265 | 0.8526 | 0.9802 | 0.8732 |
+
+Accuracy was not emphasized because the dataset is highly imbalanced.
+
+Logistic Regression achieved high recall but very low precision, meaning it generated many false-positive alerts.
+
+Random Forest achieved the highest precision but lower recall than XGBoost.
+
+XGBoost achieved the highest F1-score, ROC-AUC, and PR-AUC among the baseline models. Therefore, XGBoost was selected for hyperparameter tuning.
+
+The comparison results are saved in:
+
+```text
+reports/model_comparison.csv
+```
+
+---
+
+## Final Tuned XGBoost Results
+
+The tuned XGBoost model was selected as the final V2 model.
+
+Using a classification threshold of `0.50`, the tuned model achieved:
+
+- **Precision:** 0.8817
+- **Recall:** 0.8367
+- **F1-score:** 0.8586
+- **ROC-AUC:** 0.9724
+- **PR-AUC:** 0.8764
+
+The tuned model detected **82 of 98 fraudulent transactions** and produced **11 false-positive alerts**.
+
+The threshold of `0.50` produced the highest F1-score in the threshold analysis and provided a strong balance between precision and recall.
+
+The saved final model is located at:
+
+```text
+models/xgboost_tuned.joblib
+```
+
+The model package contains:
+
+- The trained tuned XGBoost model
+- The selected classification threshold
+- The feature names used during training
+
+---
+
+## Threshold Analysis
+
+Changing the classification threshold changes the balance between precision and recall.
+
+- Lower thresholds increase recall but may create more false positives.
+- Higher thresholds increase precision but may miss more fraudulent transactions.
+- The threshold of `0.50` achieved the highest F1-score of `0.8586`.
+
+The threshold-analysis results are saved in:
+
+```text
+reports/threshold_analysis.csv
+```
+
+The final tuned-model metrics are saved in:
+
+```text
+reports/tuned_xgboost_metrics.csv
+```
+
+---
+
 ## Expected Outcome
 
-At the end of V2, the project should contain:
+The completed V2 project contains:
 
-- A trained version of each comparison model
-- A results table containing evaluation metrics
-- Confusion matrices
-- Classification reports
-- Precision-recall comparisons
-- A preliminary model ranking
-- A selected candidate for hyperparameter tuning
+- A baseline model comparison
+- Evaluation metrics for the comparison models
+- A selected candidate model
+- A tuned XGBoost model
 - Threshold-analysis results
-- Saved model files in `fraud-detection-v2/models/`
-- Evaluation reports in `fraud-detection-v2/reports/`
+- A saved final model
+- Evaluation reports
 
-The best model will not be selected using accuracy alone.
+The final model is selected using fraud-focused metrics rather than accuracy alone.
 
-The final decision will consider the trade-off between:
+The final decision considers the trade-off between:
 
 - Detecting more fraudulent transactions
 - Maintaining acceptable precision
@@ -476,13 +538,12 @@ V4 will focus on:
 
 ## Next Steps
 
-After completing the initial model comparison:
+The next version of the project will focus on model explainability.
 
-1. Select the strongest candidate model.
-2. Tune its hyperparameters.
-3. Test different classification thresholds.
-4. Compare threshold effects on precision and recall.
-5. Save the final model.
-6. Save preprocessing objects.
-7. Save evaluation results and visualizations.
-8. Prepare the selected model for explainability work in V3.
+Planned V3 tasks include:
+
+1. Analyze feature importance.
+2. Use SHAP to explain model predictions.
+3. Investigate which features contribute to fraud predictions.
+4. Create explainability visualizations.
+5. Document model behavior for stakeholders.
